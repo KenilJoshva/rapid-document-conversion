@@ -1,0 +1,91 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Rapid Document Conversion - Full-stack serverless document transformation
+  engine with automated quality validation, format recommendation, and private S3 storage.
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  # Private S3 Storage Bucket with Lifecycle Retention and Encryption
+  DocumentStorageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireDocumentsAfterTwoDays
+            Status: Enabled
+            ExpirationInDays: 2
+
+  # API Gateway with Binary Media Support
+  DocumentConversionApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      BinaryMediaTypes:
+        - '*/*'
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+
+  # Main Application Lambda Function
+  RapidDocumentConversionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: conversion_app/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DOC_BUCKET_NAME: !Ref DocumentStorageBucket
+          CORS_ALLOW_ORIGIN: "*"
+          MAX_FILE_SIZE_MB: "10"
+          STORAGE_BACKEND: "s3"
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref DocumentStorageBucket
+
+      Events:
+        RootPath:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DocumentConversionApi
+            Path: /
+            Method: ANY
+        ProxyPath:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DocumentConversionApi
+            Path: /{proxy+}
+            Method: ANY
+
+Outputs:
+  WebInterfaceUrl:
+    Description: Web Interface & API Gateway endpoint URL for Prod stage
+    Value: !Sub "https://${DocumentConversionApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/"
+  RapidDocumentConversionFunction:
+    Description: Lambda Function ARN
+    Value: !GetAtt RapidDocumentConversionFunction.Arn
+  RapidDocumentConversionFunctionIamRole:
+    Description: IAM Role created for Lambda function
+    Value: !GetAtt RapidDocumentConversionFunctionRole.Arn
+  DocumentStorageBucketName:
+    Description: Private S3 Storage Bucket for uploaded and converted documents
+    Value: !Ref DocumentStorageBucket

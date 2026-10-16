@@ -1,0 +1,24 @@
+{
+  "body": "{\"filename\": \"sample.txt\", \"source_format\": \"txt\", \"target_format\": \"pdf\", \"content_base64\": \"UmFwaWQgRG9jdW1lbnQgQ29udmVyc2lvbiBURVNUIFBJRVBMSU5F\", \"goal\": \"share_print\"}",
+  "resource": "/convert",
+  "path": "/convert",
+  "httpMethod": "POST",
+  "isBase64Encoded": false,
+  "queryStringParameters": null,
+  "headers": {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+  },
+  "requestContext": {
+    "accountId": "123456789012",
+    "resourceId": "convert",
+    "stage": "Prod",
+    "requestId": "test-conversion-request-id",
+    "identity": {
+      "sourceIp": "127.0.0.1"
+    },
+    "path": "/Prod/convert",
+    "httpMethod": "POST",
+    "protocol": "HTTP/1.1"
+  }
+}
