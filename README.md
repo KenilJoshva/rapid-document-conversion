@@ -84,18 +84,18 @@ When a user uploads a file, the rule-based recommender evaluates the input forma
 ## Local Development & Testing
 
 ### Prerequisites
-- Python 3.12 (e.g., `py -3.12` or `python3.12`)
+- Python 3.12+ (run `py` or `python`)
 - AWS SAM CLI (version 1.160+)
 
 ### 1. Install Dependencies
 ```bash
-py -3.12 -m pip install -r conversion_app/requirements.txt
-py -3.12 -m pip install -r tests/requirements.txt
+py -m pip install -r conversion_app/requirements.txt
+py -m pip install -r tests/requirements.txt
 ```
 
 ### 2. Run Automated Unit Tests
 ```bash
-py -3.12 -m pytest tests/unit -v
+py -m pytest tests/unit -v
 ```
 
 All 27 test cases test:
@@ -114,7 +114,7 @@ sam validate
 ### 4. Run the Web Application Locally
 Without Docker or AWS credentials:
 ```bash
-py -3.12 local_server.py 8000
+py local_server.py 8000
 ```
 Open your browser to: **`http://localhost:8000/`**
 
