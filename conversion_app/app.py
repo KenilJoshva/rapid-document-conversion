@@ -96,7 +96,7 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             return build_response(200, html_content, content_type="text/html; charset=utf-8")
 
         # Route 2: Static CSS / JS
-        if (clean_path.startswith("/static/") or clean_path in ("/style.css", "/app.js")) and http_method == "GET":
+        if (clean_path.startswith("/static/") or clean_path.endswith(".css") or clean_path.endswith(".js")) and http_method == "GET":
             asset_name = clean_path.replace("/static/", "").lstrip("/")
             content = _get_static_asset(asset_name)
             if not content:
