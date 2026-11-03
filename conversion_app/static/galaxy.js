@@ -7,19 +7,19 @@
 (function () {
   'use strict';
 
-  // Configuration matching the user's React Bits setup
+  // Configuration matching the React Bits "Binary Orbits" customization exactly
   const CONFIG = {
-    particleCount: 45000,   // High-density stellar cloud
-    arms: 3,                // 3 spiral arms
-    armColor: [0.48, 0.30, 1.0],      // #7B4DFF (Vibrant Violet / Purple)
-    armOuterColor: [0.65, 0.45, 1.0], // #A873FF (Soft Lavender)
-    coreColor: [1.0, 0.76, 0.93],     // #FFC2EE (Luminous Pinkish-White Nucleus)
-    ambientColor: [0.04, 0.04, 0.06], // #0A0A0A (Deep Void Background)
-    starBaseSize: 1.8,      // Base particle size
-    rotationSpeed: 0.0006,  // Galactic orbital drift speed
-    tiltX: 1.05,            // ~60 degrees 3D oblique viewing angle
-    mouseSensitivity: 0.25, // Gentle interactive parallax
-    sparkleRate: 0.5        // Twinkle factor
+    particleCount: 70000,             // Stars: 70000
+    arms: 3,                          // Arms: 3
+    armColor: [0.482, 0.302, 1.0],    // Arms: #7B4DFF
+    armOuterColor: [0.65, 0.45, 1.0], // Arm outer fringes
+    coreColor: [1.0, 0.761, 0.933],   // Core: #FFC2EE
+    ambientColor: [0.039, 0.039, 0.039], // Background: #0A0A0A
+    starBaseSize: 1.70,               // Star Size: 1.70px
+    rotationSpeed: 0.00065,           // Smooth cosmic orbital drift
+    tiltX: 1.05,                      // ~60 deg oblique perspective viewing angle
+    mouseSensitivity: 0.22,           // Parallax response
+    sparkleRate: 0.50                 // Sparkle: 0.50
   };
 
   let canvas, gl, program, buffer;
