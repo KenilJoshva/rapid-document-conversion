@@ -13,6 +13,7 @@ import markdown
 import pypdf
 import docx
 from docx.shared import Pt, Inches, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Preformatted
@@ -204,6 +205,162 @@ def _image_to_pdf(img_bytes: bytes) -> bytes:
         return out.getvalue()
 
 
+def _pdf_to_docx(pdf_bytes: bytes) -> bytes:
+    """Convert extracted PDF text layers and pages into a formatted DOCX document."""
+    reader = pypdf.PdfReader(io.BytesIO(pdf_bytes))
+    doc = docx.Document()
+
+    for section in doc.sections:
+        section.top_margin = Inches(1)
+        section.bottom_margin = Inches(1)
+        section.left_margin = Inches(1)
+        section.right_margin = Inches(1)
+
+    has_content = False
+    for idx, page in enumerate(reader.pages):
+        text = page.extract_text() or ""
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+
+        if idx > 0 and has_content:
+            doc.add_page_break()
+
+        if len(reader.pages) > 1:
+            h = doc.add_heading(f"Page {idx + 1}", level=2)
+            h.paragraph_format.space_before = Pt(8)
+            h.paragraph_format.space_after = Pt(4)
+
+        for line in lines:
+            has_content = True
+            doc.add_paragraph(line)
+
+    if not has_content:
+        doc.add_paragraph("[No extractable digital text layers detected in source PDF]")
+
+    out = io.BytesIO()
+    doc.save(out)
+    return out.getvalue()
+
+
+def _html_to_docx(html_str: str) -> bytes:
+    """Convert HTML content into a structured Microsoft Word (DOCX) document."""
+    doc = docx.Document()
+    for section in doc.sections:
+        section.top_margin = Inches(1)
+        section.bottom_margin = Inches(1)
+        section.left_margin = Inches(1)
+        section.right_margin = Inches(1)
+
+    clean_html = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", html_str, flags=re.DOTALL | re.IGNORECASE)
+
+    # Title extraction
+    title_match = re.search(r"<title[^>]*>(.*?)</title>", clean_html, re.IGNORECASE | re.DOTALL)
+    if title_match and title_match.group(1).strip():
+        doc.add_heading(title_match.group(1).strip(), level=1)
+
+    # Body extraction
+    body_match = re.search(r"<body[^>]*>(.*?)</body>", clean_html, re.IGNORECASE | re.DOTALL)
+    content_html = body_match.group(1) if body_match else clean_html
+
+    blocks = re.findall(
+        r"<(h[1-6]|p|li|blockquote|pre)[^>]*>(.*?)</\1>|([^<]+)",
+        content_html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+
+    has_content = False
+    for tag, inner, loose in blocks:
+        raw = (inner or loose or "").strip()
+        if not raw:
+            continue
+        text = re.sub(r"<[^>]+>", "", raw).strip()
+        if not text:
+            continue
+
+        has_content = True
+        tag_lower = tag.lower() if tag else ""
+        if tag_lower == "h1":
+            doc.add_heading(text, level=1)
+        elif tag_lower == "h2":
+            doc.add_heading(text, level=2)
+        elif tag_lower == "h3":
+            doc.add_heading(text, level=3)
+        elif tag_lower in ("h4", "h5", "h6"):
+            doc.add_heading(text, level=4)
+        elif tag_lower == "li":
+            doc.add_paragraph(text, style="List Bullet")
+        elif tag_lower == "blockquote":
+            p = doc.add_paragraph(text)
+            p.paragraph_format.left_indent = Inches(0.5)
+        elif tag_lower == "pre":
+            p = doc.add_paragraph(text)
+            for run in p.runs:
+                run.font.name = "Consolas"
+                run.font.size = Pt(9.5)
+        else:
+            doc.add_paragraph(text)
+
+    if not has_content:
+        plain = _html_to_text(html_str).strip()
+        if plain:
+            for line in plain.splitlines():
+                if line.strip():
+                    doc.add_paragraph(line.strip())
+        else:
+            doc.add_paragraph("[Empty document content]")
+
+    out = io.BytesIO()
+    doc.save(out)
+    return out.getvalue()
+
+
+def _image_to_docx(image_bytes: bytes) -> bytes:
+    """Embed an image into an editable Microsoft Word (DOCX) document."""
+    doc = docx.Document()
+    for section in doc.sections:
+        section.top_margin = Inches(1)
+        section.bottom_margin = Inches(1)
+        section.left_margin = Inches(1)
+        section.right_margin = Inches(1)
+
+    with Image.open(io.BytesIO(image_bytes)) as img:
+        width_px, height_px = img.size
+        aspect = width_px / max(1, height_px)
+        max_w_in = 6.0
+        max_h_in = 8.0
+
+        if aspect >= 1.0:
+            target_w = min(max_w_in, width_px / 120.0)
+            target_h = target_w / aspect
+            if target_h > max_h_in:
+                target_h = max_h_in
+                target_w = target_h * aspect
+        else:
+            target_h = min(max_h_in, height_px / 120.0)
+            target_w = target_h * aspect
+            if target_w > max_w_in:
+                target_w = max_w_in
+                target_h = target_w / aspect
+
+        target_w = max(0.5, target_w)
+        target_h = max(0.5, target_h)
+
+        img_buf = io.BytesIO(image_bytes)
+        if img.format not in ("PNG", "JPEG", "JPG"):
+            rgb = img.convert("RGB")
+            img_buf = io.BytesIO()
+            rgb.save(img_buf, format="PNG")
+            img_buf.seek(0)
+
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run()
+        run.add_picture(img_buf, width=Inches(target_w), height=Inches(target_h))
+
+    out = io.BytesIO()
+    doc.save(out)
+    return out.getvalue()
+
+
 # -----------------------------------------------------------------------------
 # Main Conversion Dispatcher
 # -----------------------------------------------------------------------------
@@ -336,7 +493,9 @@ def convert_document(
         if not combined_text.strip():
             combined_text = "[No extractable digital text layers detected in this PDF]"
 
-        if tgt == "txt":
+        if tgt == "docx":
+            return _pdf_to_docx(input_data), "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        elif tgt == "txt":
             return combined_text.encode("utf-8"), "text/plain"
         elif tgt == "md":
             formatted = f"# Extracted PDF Content\n\n{combined_text}\n"
@@ -345,7 +504,9 @@ def convert_document(
     # 6. HTML Source Conversions
     if src == "html":
         html_str = input_data.decode("utf-8", errors="replace")
-        if tgt == "txt":
+        if tgt == "docx":
+            return _html_to_docx(html_str), "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        elif tgt == "txt":
             plain = _html_to_text(html_str)
             return plain.encode("utf-8"), "text/plain"
         elif tgt == "md":
@@ -358,7 +519,9 @@ def convert_document(
     # 7. Image Conversions (PNG, JPG, WEBP, BMP)
     image_formats = ("png", "jpg", "jpeg", "webp", "bmp")
     if src in image_formats:
-        if tgt == "pdf":
+        if tgt == "docx":
+            return _image_to_docx(input_data), "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        elif tgt == "pdf":
             return _image_to_pdf(input_data), "application/pdf"
         elif tgt in image_formats:
             return _transcode_image(input_data, tgt), _get_image_mime(tgt)

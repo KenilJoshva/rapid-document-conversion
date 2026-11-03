@@ -108,7 +108,7 @@ def test_lambda_handler_unsupported_conversion(make_event):
         body={
             "filename": "document.pdf",
             "source_format": "pdf",
-            "target_format": "docx",  # Unsupported direction
+            "target_format": "bmp",  # Unsupported direction
             "content_base64": base64.b64encode(b"sample").decode("ascii"),
         },
     )

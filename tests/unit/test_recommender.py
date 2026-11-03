@@ -20,8 +20,11 @@ def test_is_conversion_supported():
     assert is_conversion_supported("md", "docx") is True
     assert is_conversion_supported("docx", "html") is True
     assert is_conversion_supported("png", "webp") is True
+    assert is_conversion_supported("pdf", "docx") is True
+    assert is_conversion_supported("html", "docx") is True
+    assert is_conversion_supported("png", "docx") is True
     # Unsupported
-    assert is_conversion_supported("pdf", "docx") is False
+    assert is_conversion_supported("pdf", "bmp") is False
     assert is_conversion_supported("exe", "pdf") is False
 
 
@@ -36,9 +39,10 @@ def test_recommend_format_by_goal():
     rec_edit = recommend_format("txt", goal="editing")
     assert rec_edit["recommended_format"] in ("docx", "md")
 
-    # PDF with editing goal should recommend TXT or MD
+    # PDF with editing goal should recommend DOCX
     rec_pdf = recommend_format("pdf", goal="editing")
-    assert rec_pdf["recommended_format"] in ("txt", "md")
+    assert rec_pdf["recommended_format"] == "docx"
+    assert "docx" in rec_pdf["supported_targets"]
 
     # PNG with web publishing goal should recommend WebP
     rec_img = recommend_format("png", goal="web_publishing")

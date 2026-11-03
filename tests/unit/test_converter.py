@@ -117,7 +117,42 @@ def test_image_transcoding():
     assert img_pdf.startswith(b"%PDF")
 
 
+def test_pdf_to_docx():
+    sample_text = "Executive Summary\nKey findings in document."
+    pdf_bytes = _text_to_pdf(sample_text)
+
+    docx_bytes, mime = convert_document(pdf_bytes, "pdf", "docx")
+    assert "wordprocessingml" in mime
+    assert docx_bytes.startswith(b"PK\x03\x04")
+    doc = docx.Document(io.BytesIO(docx_bytes))
+    all_text = " ".join(p.text for p in doc.paragraphs)
+    assert "Executive Summary" in all_text
+
+
+def test_html_to_docx():
+    html_sample = "<html><head><title>My Doc</title></head><body><h1>Header</h1><p>Body paragraph.</p></body></html>"
+    docx_bytes, mime = convert_document(html_sample.encode("utf-8"), "html", "docx")
+    assert "wordprocessingml" in mime
+    assert docx_bytes.startswith(b"PK\x03\x04")
+    doc = docx.Document(io.BytesIO(docx_bytes))
+    all_text = " ".join(p.text for p in doc.paragraphs)
+    assert "Body paragraph." in all_text
+
+
+def test_image_to_docx():
+    img = Image.new("RGB", (120, 120), color=(0, 255, 0))
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    png_bytes = buf.getvalue()
+
+    docx_bytes, mime = convert_document(png_bytes, "png", "docx")
+    assert "wordprocessingml" in mime
+    assert docx_bytes.startswith(b"PK\x03\x04")
+    doc = docx.Document(io.BytesIO(docx_bytes))
+    assert len(doc.paragraphs) >= 1
+
+
 def test_unsupported_conversion_raises():
     with pytest.raises(ConversionError) as exc_info:
-        convert_document(b"random-data", "pdf", "docx")
+        convert_document(b"random-data", "pdf", "bmp")
     assert "unsupported" in str(exc_info.value).lower()

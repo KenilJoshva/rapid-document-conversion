@@ -19,13 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
     txt: ['pdf', 'docx', 'html', 'md'],
     md: ['pdf', 'docx', 'html', 'txt'],
     docx: ['txt', 'md', 'html', 'pdf'],
-    pdf: ['txt', 'md'],
-    html: ['txt', 'md', 'pdf'],
-    png: ['jpg', 'webp', 'pdf', 'bmp'],
-    jpg: ['png', 'webp', 'pdf', 'bmp'],
-    jpeg: ['png', 'webp', 'pdf', 'bmp'],
-    webp: ['png', 'jpg', 'pdf', 'bmp'],
-    bmp: ['png', 'jpg', 'webp', 'pdf'],
+    pdf: ['docx', 'txt', 'md'],
+    html: ['docx', 'txt', 'md', 'pdf'],
+    png: ['jpg', 'webp', 'pdf', 'docx', 'bmp'],
+    jpg: ['png', 'webp', 'pdf', 'docx', 'bmp'],
+    jpeg: ['png', 'webp', 'pdf', 'docx', 'bmp'],
+    webp: ['png', 'jpg', 'pdf', 'docx', 'bmp'],
+    bmp: ['png', 'jpg', 'webp', 'pdf', 'docx'],
   };
 
   const LOCAL_REASONS = {
@@ -40,14 +40,20 @@ document.addEventListener('DOMContentLoaded', () => {
     'docx->md': 'Extracts structured text from Word into portable, git-friendly Markdown.',
     'docx->txt': 'Extracts clean plain text, removing complex formatting for indexing or quick reading.',
     'docx->html': 'Converts document paragraphs and styles into web-friendly HTML.',
+    'pdf->docx': 'Extracts text layers from the PDF into an editable, formatted Microsoft Word document.',
     'pdf->txt': 'Extracts readable text layers from the PDF document for editing or search indexing.',
     'pdf->md': 'Extracts text content formatted into structured Markdown blocks.',
+    'html->docx': 'Converts HTML headings, paragraphs, and lists into a structured Microsoft Word document.',
     'html->pdf': 'Converts HTML markup into a print-ready PDF document.',
+    'png->docx': 'Embeds the image centered into a styled Microsoft Word document.',
     'png->webp': 'Recompresses PNG into modern WebP with smaller file size and transparency retention.',
     'png->pdf': 'Packages the image into a standardized PDF page.',
+    'jpg->docx': 'Embeds the photograph into a formatted Microsoft Word document.',
     'jpg->webp': 'Significantly reduces image size while maintaining visual fidelity for web delivery.',
     'jpg->pdf': 'Encapsulates the photograph or scan into a shareable single-page PDF document.',
+    'webp->docx': 'Embeds the WebP image into a Microsoft Word document.',
     'webp->png': 'Converts modern WebP back into universal PNG format for maximum legacy compatibility.',
+    'bmp->docx': 'Embeds the bitmap image into a Microsoft Word document.',
   };
 
   function computeLocalRecommendation(src, goal) {
