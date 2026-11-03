@@ -63,8 +63,23 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* 3D Binary Orbits Galaxy Canvas (Fixed Fullscreen Background) */
-#galaxy-bg {
+/* React Bits - Waves Background (Fixed Fullscreen Canvas) */
+.waves {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.waves__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#waves-bg.waves,
+#waves-bg {
   position: fixed;
   top: 0;
   left: 0;
@@ -72,7 +87,6 @@ body {
   height: 100vh;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.95;
 }
 
 /* Header */
