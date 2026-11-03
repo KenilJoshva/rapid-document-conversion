@@ -313,6 +313,21 @@ document.addEventListener('DOMContentLoaded', () => {
     updateConvertButton();
   }
 
+  // Standard SVG Icons for UI
+  const ICONS = {
+    doc: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>',
+    edit: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>',
+    web: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>',
+    bolt: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>',
+    archive: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>',
+    folder: '<svg class="btn-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>',
+    boltBtn: '<svg class="btn-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>',
+    pass: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>',
+    warn: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>',
+    fail: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>',
+    arrowRight: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin:0 4px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+  };
+
   // Goal Selector (React Bits JellyRadio)
   let goalRadio = null;
   let formatRadio = null;
@@ -322,11 +337,11 @@ document.addEventListener('DOMContentLoaded', () => {
     goalContainer.classList.add('has-jelly-radio');
     goalRadio = window.JellyRadio.create(goalContainer, {
       items: [
-        { value: 'share_print', label: 'Share / Print', icon: '📄' },
-        { value: 'editing', label: 'Easy Editing', icon: '✏️' },
-        { value: 'web_publishing', label: 'Web Publishing', icon: '🌐' },
-        { value: 'lightweight_text', label: 'Plain Text', icon: '⚡' },
-        { value: 'archival', label: 'Archival', icon: '📦' }
+        { value: 'share_print', label: 'Share / Print', icon: ICONS.doc },
+        { value: 'editing', label: 'Easy Editing', icon: ICONS.edit },
+        { value: 'web_publishing', label: 'Web Publishing', icon: ICONS.web },
+        { value: 'lightweight_text', label: 'Plain Text', icon: ICONS.bolt },
+        { value: 'archival', label: 'Archival', icon: ICONS.archive }
       ],
       defaultValue: state.goal || 'share_print',
       size: 'md',
@@ -441,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (state.file && state.targetFormat && !state.isProcessing) {
       convertBtn.disabled = false;
       convertBtn.classList.add('pulse-action');
-      convertBtnText.textContent = `⚡ Convert to ${state.targetFormat.toUpperCase()} Now`;
+      convertBtnText.innerHTML = `${ICONS.boltBtn} <span>Convert to ${state.targetFormat.toUpperCase()} Now</span>`;
     } else if (state.file && !state.targetFormat && !state.isProcessing) {
       convertBtn.disabled = true;
       convertBtnText.textContent = 'Select a Target Format';
@@ -451,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       // No file selected yet: clicking prompts file selection
       convertBtn.disabled = false;
-      convertBtnText.textContent = '📁 Choose Document to Upload';
+      convertBtnText.innerHTML = `${ICONS.folder} <span>Choose Document to Upload</span>`;
     }
   }
 
@@ -477,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const fileBase64 = await readFileAsBase64(state.file);
 
-      animateProgress(45, `Converting ${state.sourceFormat.toUpperCase()} ➔ ${state.targetFormat.toUpperCase()}...`, 'convert');
+      animateProgress(45, `Converting ${state.sourceFormat.toUpperCase()} → ${state.targetFormat.toUpperCase()}...`, 'convert');
 
       const response = await fetch('/convert', {
         method: 'POST',
@@ -544,9 +559,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const status = val.status || 'PASS';
 
     resultStatusPill.className = `status-pill status-${status.toLowerCase()}`;
-    resultStatusPill.innerHTML = `<span class="status-icon">${status === 'PASS' ? '✓' : status === 'WARNING' ? '⚠️' : '✗'}</span> ${status}`;
+    const statusSvg = status === 'PASS' ? ICONS.pass : status === 'WARNING' ? ICONS.warn : ICONS.fail;
+    resultStatusPill.innerHTML = `<span class="status-icon">${statusSvg}</span> ${status}`;
 
-    resultTransLabel.textContent = `${job.source_format.toUpperCase()} ➔ ${job.target_format.toUpperCase()}`;
+    resultTransLabel.innerHTML = `${job.source_format.toUpperCase()} ${ICONS.arrowRight} ${job.target_format.toUpperCase()}`;
     resultOutputName.textContent = job.output_filename;
     resultSummaryText.textContent = val.summary || 'Document converted and processed successfully.';
 
@@ -560,10 +576,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const row = document.createElement('div');
       row.className = 'check-item';
       const iconClass = chk.status.toLowerCase();
-      const iconSymbol = chk.status === 'PASS' ? '✓' : chk.status === 'WARNING' ? '!' : '✗';
+      const checkIconSvg = chk.status === 'PASS' ? ICONS.pass : chk.status === 'WARNING' ? ICONS.warn : ICONS.fail;
 
       row.innerHTML = `
-        <span class="check-status-icon ${iconClass}">${iconSymbol}</span>
+        <span class="check-status-icon ${iconClass}">${checkIconSvg}</span>
         <div>
           <div class="check-name">${chk.name}</div>
           <div class="check-msg">${chk.message}</div>

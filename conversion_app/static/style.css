@@ -480,8 +480,11 @@ body {
 }
 
 .callout-icon {
-  font-size: 1.3rem;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #34d399;
+  flex-shrink: 0;
 }
 
 .callout-text strong {
@@ -618,7 +621,11 @@ body {
 }
 
 .goal-icon {
-  font-size: 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  flex-shrink: 0;
 }
 
 .goal-name {
@@ -947,6 +954,19 @@ body {
   box-shadow: 0 0 15px rgba(248, 113, 113, 0.2);
 }
 
+.status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-right: 0.3rem;
+  line-height: 1;
+}
+
+.status-icon svg {
+  display: block;
+}
+
 .file-trans-label {
   font-family: var(--font-mono);
   font-size: 0.825rem;
@@ -1027,9 +1047,17 @@ body {
 }
 
 .check-status-icon {
-  font-size: 0.9rem;
-  font-weight: 800;
-  line-height: 1.4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.check-status-icon svg {
+  display: block;
 }
 
 .check-status-icon.pass { color: var(--status-pass); }
@@ -1107,7 +1135,12 @@ body {
 }
 
 .issues-icon {
-  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbbf24;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 .issues-title {
@@ -1168,7 +1201,12 @@ body {
 }
 
 .alert-icon {
-  font-size: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--status-fail);
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 .alert-title {

@@ -120,7 +120,12 @@
 
         <!-- File Loaded Instruction Banner -->
         <div class="upload-status-callout hidden" id="upload-status-callout">
-          <span class="callout-icon">✅</span>
+          <span class="callout-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </span>
           <div class="callout-text">
             <strong>Document loaded successfully.</strong>
             <span>Select target format below and click <strong>Convert</strong> to start.</span>
@@ -133,23 +138,52 @@
           <label class="input-label" for="goal-select">What is your primary goal?</label>
           <div class="goal-grid" id="goal-options">
             <button type="button" class="goal-btn active" data-goal="share_print">
-              <span class="goal-icon">📄</span>
+              <span class="goal-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+              </span>
               <span class="goal-name">Share / Print</span>
             </button>
             <button type="button" class="goal-btn" data-goal="editing">
-              <span class="goal-icon">✏️</span>
+              <span class="goal-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 20h9"></path>
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
+              </span>
               <span class="goal-name">Easy Editing</span>
             </button>
             <button type="button" class="goal-btn" data-goal="web_publishing">
-              <span class="goal-icon">🌐</span>
+              <span class="goal-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+              </span>
               <span class="goal-name">Web Publishing</span>
             </button>
             <button type="button" class="goal-btn" data-goal="lightweight_text">
-              <span class="goal-icon">⚡</span>
+              <span class="goal-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+              </span>
               <span class="goal-name">Plain Text</span>
             </button>
             <button type="button" class="goal-btn" data-goal="archival">
-              <span class="goal-icon">📦</span>
+              <span class="goal-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+              </span>
               <span class="goal-name">Archival</span>
             </button>
           </div>
@@ -158,7 +192,12 @@
         <!-- Intelligent Recommendation Banner -->
         <div class="recommendation-box hidden" id="recommendation-box">
           <div class="rec-header">
-            <span class="rec-sparkle">✨ Intelligent Format Recommendation</span>
+            <span class="rec-sparkle">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+              </svg>
+              Intelligent Format Recommendation
+            </span>
             <span class="rec-badge" id="rec-target-badge">PDF</span>
           </div>
           <p class="rec-reason" id="rec-reason-text">Select a document to see tailored recommendation.</p>
@@ -176,7 +215,12 @@
         <!-- Action Button -->
         <button type="button" class="btn btn-primary" id="convert-btn">
           <span class="btn-spinner hidden" id="btn-spinner"></span>
-          <span class="btn-text" id="convert-btn-text">📁 Choose Document to Upload</span>
+          <span class="btn-text" id="convert-btn-text">
+            <svg class="btn-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Choose Document to Upload</span>
+          </span>
         </button>
 
       </section>
@@ -220,7 +264,13 @@
 
         <!-- Error Card -->
         <div class="alert-box alert-error hidden" id="error-card">
-          <div class="alert-icon">⚠️</div>
+          <div class="alert-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
           <div>
             <h4 class="alert-title" id="error-title">Conversion Error</h4>
             <p class="alert-desc" id="error-message">Something went wrong during transformation.</p>
@@ -233,9 +283,13 @@
           <div class="result-hero">
             <div class="result-badge-row">
               <span class="status-pill status-pass" id="result-status-pill">
-                <span class="status-icon">✓</span> PASS
+                <span class="status-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span> PASS
               </span>
-              <span class="file-trans-label" id="result-trans-label">TXT ➔ PDF</span>
+              <span class="file-trans-label" id="result-trans-label">TXT &rarr; PDF</span>
             </div>
             <h4 class="result-filename" id="result-output-name">document.pdf</h4>
             <p class="result-summary" id="result-summary-text">Document converted and passed quality validation.</p>
@@ -278,7 +332,13 @@
           <!-- Detected Issues & Remediation Guidance (Visible on Warnings/Failures) -->
           <div class="issues-card hidden" id="issues-card">
             <div class="issues-header">
-              <span class="issues-icon">ℹ️</span>
+              <span class="issues-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+              </span>
               <h5 class="issues-title">Detected Issues & Diagnostic Guidance</h5>
             </div>
             <div id="issues-list" class="issues-list">
