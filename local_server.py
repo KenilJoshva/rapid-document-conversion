@@ -8,6 +8,7 @@ import os
 import sys
 import json
 import base64
+import importlib
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
@@ -52,7 +53,23 @@ class LocalApiHandler(BaseHTTPRequestHandler):
             "isBase64Encoded": False,
         }
 
-        response = lambda_handler(event, None)
+        # Auto-reload application modules in local development so changes take effect immediately
+        try:
+            import conversion_app.recommender
+            import conversion_app.converter
+            import conversion_app.validator
+            import conversion_app.storage
+            import conversion_app.app
+            importlib.reload(conversion_app.recommender)
+            importlib.reload(conversion_app.converter)
+            importlib.reload(conversion_app.validator)
+            importlib.reload(conversion_app.storage)
+            importlib.reload(conversion_app.app)
+            active_handler = conversion_app.app.lambda_handler
+        except Exception:
+            active_handler = lambda_handler
+
+        response = active_handler(event, None)
 
         status_code = response.get("statusCode", 200)
         headers = response.get("headers", {})
