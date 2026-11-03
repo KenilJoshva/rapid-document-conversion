@@ -563,6 +563,32 @@ body {
   gap: 0.65rem;
 }
 
+.goal-grid.has-jelly-radio,
+#goal-options.has-jelly-radio {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 4px 0 8px;
+  scrollbar-width: none;
+}
+
+.goal-grid.has-jelly-radio::-webkit-scrollbar {
+  display: none;
+}
+
+.format-chips-container.has-jelly-radio {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 4px 0 8px;
+  min-height: 48px;
+  scrollbar-width: none;
+}
+
+.format-chips-container.has-jelly-radio::-webkit-scrollbar {
+  display: none;
+}
+
 .goal-btn {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-subtle);
@@ -724,6 +750,13 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 15px 40px -5px rgba(123, 77, 255, 0.7);
   filter: brightness(1.08);
+}
+
+.btn:not(:disabled):active,
+.btn-browse-file:active,
+.btn-change-file:active {
+  transform: scale(0.97) !important;
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .btn-success {

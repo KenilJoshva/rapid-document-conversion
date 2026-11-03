@@ -237,7 +237,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (uploadStatusCallout) uploadStatusCallout.classList.add('hidden');
     if (emptyStateTitle) emptyStateTitle.textContent = "No Conversion Active";
     if (emptyStateDesc) emptyStateDesc.textContent = "Choose an input file and target format on the left to start the serverless transformation and automated quality audit.";
+    targetChipsContainer.classList.remove('has-jelly-radio');
     targetChipsContainer.innerHTML = '<span class="empty-hint">Upload a document to reveal supported target formats</span>';
+    formatRadio = null;
 
     updateConvertButton();
   }
@@ -311,46 +313,127 @@ document.addEventListener('DOMContentLoaded', () => {
     updateConvertButton();
   }
 
-  // Goal Selector
-  goalButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      goalButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      state.goal = btn.getAttribute('data-goal');
-      if (state.sourceFormat) {
-        const rec = computeLocalRecommendation(state.sourceFormat, state.goal);
-        state.targetFormat = rec.recommended;
-        if (rec.recommended) {
-          recBadge.textContent = rec.recommended.toUpperCase();
-          recReasonText.textContent = rec.reason;
-          recBox.classList.remove('hidden');
+  // Goal Selector (React Bits JellyRadio)
+  let goalRadio = null;
+  let formatRadio = null;
+  const goalContainer = document.getElementById('goal-options');
+
+  if (window.JellyRadio && goalContainer) {
+    goalContainer.classList.add('has-jelly-radio');
+    goalRadio = window.JellyRadio.create(goalContainer, {
+      items: [
+        { value: 'share_print', label: 'Share / Print', icon: '📄' },
+        { value: 'editing', label: 'Easy Editing', icon: '✏️' },
+        { value: 'web_publishing', label: 'Web Publishing', icon: '🌐' },
+        { value: 'lightweight_text', label: 'Plain Text', icon: '⚡' },
+        { value: 'archival', label: 'Archival', icon: '📦' }
+      ],
+      defaultValue: state.goal || 'share_print',
+      size: 'md',
+      gap: 8,
+      radius: 18,
+      swell: 0.2,
+      barge: 6,
+      shrink: 0.05,
+      jelly: 1,
+      bounce: 0.25,
+      stagger: 22,
+      stiffness: 580,
+      chipColor: 'rgba(255, 255, 255, 0.05)',
+      activeColor: '#7b4dff',
+      textColor: '#cbd5e1',
+      activeTextColor: '#ffffff',
+      ariaLabel: 'Primary Conversion Goal',
+      onChange: (value) => {
+        state.goal = value;
+        if (state.sourceFormat) {
+          const rec = computeLocalRecommendation(state.sourceFormat, state.goal);
+          state.targetFormat = rec.recommended;
+          if (rec.recommended) {
+            recBadge.textContent = rec.recommended.toUpperCase();
+            recReasonText.textContent = rec.reason;
+            recBox.classList.remove('hidden');
+          }
+          renderTargetChips(rec.targets, state.targetFormat);
+          updateConvertButton();
         }
-        renderTargetChips(rec.targets, state.targetFormat);
-        updateConvertButton();
       }
     });
-  });
+  } else {
+    // Fallback if JellyRadio is not loaded
+    goalButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        goalButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.goal = btn.getAttribute('data-goal');
+        if (state.sourceFormat) {
+          const rec = computeLocalRecommendation(state.sourceFormat, state.goal);
+          state.targetFormat = rec.recommended;
+          if (rec.recommended) {
+            recBadge.textContent = rec.recommended.toUpperCase();
+            recReasonText.textContent = rec.reason;
+            recBox.classList.remove('hidden');
+          }
+          renderTargetChips(rec.targets, state.targetFormat);
+          updateConvertButton();
+        }
+      });
+    });
+  }
 
   function renderTargetChips(targets, activeTarget) {
     targetChipsContainer.innerHTML = '';
+    targetChipsContainer.classList.remove('has-jelly-radio');
+
     if (!targets || targets.length === 0) {
       targetChipsContainer.innerHTML = '<span class="empty-hint">No conversion pathways available for this format.</span>';
+      formatRadio = null;
       return;
     }
 
-    targets.forEach(tgt => {
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = `format-chip ${tgt === activeTarget ? 'active' : ''}`;
-      chip.textContent = tgt.toUpperCase();
-      chip.addEventListener('click', () => {
-        document.querySelectorAll('.format-chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        state.targetFormat = tgt;
-        updateConvertButton();
+    if (window.JellyRadio) {
+      targetChipsContainer.classList.add('has-jelly-radio');
+      formatRadio = window.JellyRadio.create(targetChipsContainer, {
+        items: targets.map(tgt => ({
+          value: tgt,
+          label: tgt.toUpperCase()
+        })),
+        defaultValue: activeTarget || targets[0],
+        size: 'md',
+        gap: 8,
+        radius: 18,
+        swell: 0.22,
+        barge: 6,
+        shrink: 0.05,
+        jelly: 1,
+        bounce: 0.25,
+        stagger: 22,
+        stiffness: 580,
+        chipColor: 'rgba(255, 255, 255, 0.05)',
+        activeColor: '#7b4dff',
+        textColor: '#cbd5e1',
+        activeTextColor: '#ffffff',
+        ariaLabel: 'Target Format Options',
+        onChange: (tgt) => {
+          state.targetFormat = tgt;
+          updateConvertButton();
+        }
       });
-      targetChipsContainer.appendChild(chip);
-    });
+    } else {
+      targets.forEach(tgt => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = `format-chip ${tgt === activeTarget ? 'active' : ''}`;
+        chip.textContent = tgt.toUpperCase();
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.format-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          state.targetFormat = tgt;
+          updateConvertButton();
+        });
+        targetChipsContainer.appendChild(chip);
+      });
+    }
   }
 
   function updateConvertButton() {
